@@ -1,6 +1,6 @@
 // @TODO: YOUR CODE HERE!
 
-// Create svg wrapper
+// Create svg wrapper dimensions
 var svgWidth = 960;
 var svgHeight = 500;
 
@@ -14,13 +14,22 @@ var margin = {
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
+// Create svg wrapper element
+var svg = d3.select("#scatter")
+  .append("svg")
+  .attr("width", svgWidth)
+  .attr("height", svgHeight);
+
+
+// Create group that is shifted by top and left margins
+var chartGroup = svg.append("g")
+  .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
 // Import data
 d3.csv("assets/data/data.csv").then(function(stateData) {
 
   console.log(stateData);
 
-  // Get scatter element with d3
-  var scatterPlot = d3.select("#scatter");
 
 }).catch(function(error) {
   console.log(error);
