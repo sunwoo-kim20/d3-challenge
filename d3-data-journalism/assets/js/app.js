@@ -41,11 +41,11 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
 
   // Create scales for scatter plot
   var xScale = d3.scaleLinear()
-    .domain([0, d3.max(stateData, d => d.poverty)])
+    .domain([d3.min(stateData, d => d.poverty) -2, d3.max(stateData, d => d.poverty) +2])
     .range([0,width]);
 
   var yScale = d3.scaleLinear()
-    .domain([0, d3.max(stateData, d => d.healthcare)])
+    .domain([0, d3.max(stateData, d => d.healthcare)+2])
     .range([height, 0]);
 
   // Create axes
