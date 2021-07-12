@@ -37,11 +37,11 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
 
   // Create scales for scatter plot
   var xScale = d3.scaleLinear()
-    .domain(d3.extent(hairData, d => d.poverty))
+    .domain(d3.extent(stateData, d => d.poverty))
     .range([0,width]);
 
   var yScale = d3.scaleLinear()
-    .domain([0, d3.max(hairData, d => d.obesity)])
+    .domain([0, d3.max(stateData, d => d.obesity)])
     .range([height, 0]);
 
   // Create axes
@@ -58,11 +58,11 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
 
   // Create and plot the circles for each state
   var scatterPoints = chartGroup.selectAll("circle")
-    .data(hairData)
+    .data(stateData)
     .enter()
     .append("circle")
-    .attr("cx", d => xScale(d.hair_length))
-    .attr("cy", d => yScale(d.num_hits))
+    .attr("cx", d => xScale(d.poverty))
+    .attr("cy", d => yScale(d.obesity))
     .attr("r", "5")
     .attr("fill", "gold")
     .attr("stroke-width", "1")
