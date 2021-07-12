@@ -29,6 +29,10 @@ var chartGroup = svg.append("g")
 d3.csv("assets/data/data.csv").then(function(stateData) {
 
   console.log(stateData);
+  stateData.forEach(function(data) {
+    data.obesity = +data.obesity;
+    data.poverty = +data.poverty;
+  });
 
 
 }).catch(function(error) {
