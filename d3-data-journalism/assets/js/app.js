@@ -29,19 +29,23 @@ var chartGroup = svg.append("g")
 d3.csv("assets/data/data.csv").then(function(stateData) {
 
   console.log(stateData);
-  // Type cast numeric data to int
+  // Type cast numeric data to numeric
   stateData.forEach(function(data) {
-    data.obesity = +data.obesity;
+    data.healthcare = +data.healthcare;
     data.poverty = +data.poverty;
+    if (data.abbr === "NH") {
+      console.log(data.poverty);
+      console.log(data.healthcare);
+    }
   });
 
   // Create scales for scatter plot
   var xScale = d3.scaleLinear()
-    .domain(d3.extent(stateData, d => d.poverty))
+    .domain([0, d3.max(stateData, d => d.poverty)])
     .range([0,width]);
 
   var yScale = d3.scaleLinear()
-    .domain([0, d3.max(stateData, d => d.obesity)])
+    .domain([0, d3.max(stateData, d => d.healthcare)])
     .range([height, 0]);
 
   // Create axes
@@ -62,11 +66,11 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
     .enter()
     .append("circle")
     .attr("cx", d => xScale(d.poverty))
-    .attr("cy", d => yScale(d.obesity))
-    .attr("r", "5")
-    .attr("fill", "gold")
+    .attr("cy", d => yScale(d.healthcare))
+    .attr("r", "7")
+    .attr("fill", "lightblue")
     .attr("stroke-width", "1")
-    .attr("stroke", "black");
+    .attr("stroke", "white");
 
 
 }).catch(function(error) {
