@@ -56,6 +56,18 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
   chartGroup.append("g")
     .call(yAxis);
 
+  // Create and plot the circles for each state
+  var scatterPoints = chartGroup.selectAll("circle")
+    .data(hairData)
+    .enter()
+    .append("circle")
+    .attr("cx", d => xScale(d.hair_length))
+    .attr("cy", d => yScale(d.num_hits))
+    .attr("r", "5")
+    .attr("fill", "gold")
+    .attr("stroke-width", "1")
+    .attr("stroke", "black");
+
 
 }).catch(function(error) {
   console.log(error);
