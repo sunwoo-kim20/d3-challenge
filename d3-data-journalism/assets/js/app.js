@@ -44,6 +44,10 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
     .domain([0, d3.max(hairData, d => d.obesity)])
     .range([height, 0]);
 
+  // Create axes
+  var xAxis = d3.axisBottom(xScale);
+  var yAxis = d3.axisLeft(yScale);
+
 
 
 }).catch(function(error) {
