@@ -29,10 +29,21 @@ var chartGroup = svg.append("g")
 d3.csv("assets/data/data.csv").then(function(stateData) {
 
   console.log(stateData);
+  // Type cast numeric data to int
   stateData.forEach(function(data) {
     data.obesity = +data.obesity;
     data.poverty = +data.poverty;
   });
+
+  // Create scales for scatter plot
+  var xScale = d3.scaleLinear()
+    .domain(d3.extent(hairData, d => d.poverty))
+    .range([0,width]);
+
+  var yScale = d3.scaleLinear()
+    .domain([0, d3.max(hairData, d => d.obesity)])
+    .range([height, 0]);
+
 
 
 }).catch(function(error) {
