@@ -48,6 +48,13 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
   var xAxis = d3.axisBottom(xScale);
   var yAxis = d3.axisLeft(yScale);
 
+  // Append axes to chart
+  chartGroup.append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(xAxis);
+
+  chartGroup.append("g")
+    .call(yAxis);
 
 
 }).catch(function(error) {
