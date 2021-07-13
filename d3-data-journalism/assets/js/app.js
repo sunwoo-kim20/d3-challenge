@@ -94,12 +94,22 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
     .attr("stroke", "white")
     .attr("opacity", 0.7);
 
+  // Add state abbreviations for each point
   scatterPoints.append("text")
     .text(d => d.abbr)
     .attr("x", d => xScale(d.poverty))
     .attr("y", d => yScale(d.healthcare))
     .attr("dy","0.35em")
     .attr("text-anchor", "middle");
+
+  // Create tool tip
+  var toolTip = d3.tip()
+    .attr("class", "tooltip")
+    .offset([80, -60])
+    .html(function(d) {
+      return (`<strong>${d.state}<strong><hr>${d.poverty}%
+      <br>${d.healthcare}%`);
+    });
 
 
 }).catch(function(error) {
