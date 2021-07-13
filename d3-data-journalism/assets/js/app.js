@@ -25,40 +25,107 @@ var svg = d3.select("#scatter")
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+
+var selectedYAxis = "healthcare";
+
+// Functions to be run after axis selection
+
+// Function to update the plot's yscale after new selection
+function updateYScale(stateData, selectedYAxis) {
+  console.log("hello");
+  console.log(d3.max(stateData, d => d[selectedYAxis]));
+  var yLinearScale = d3.scaleLinear()
+    .domain([0, d3.max(stateData, d => d[selectedYAxis]) * 1.2])
+    .range([height, 0]);
+  return yLinearScale;
+
+}
+
+// Function used to update y axis
+function updateAxis(newYScale, yAxis) {
+  var leftAxis = d3.axisLeft(newYScale);
+
+  yAxis.transition()
+    .duration(1000)
+    .call(leftAxis);
+
+  return yAxis;
+}
+
+// function used for updating scatter plot points
+function updatePoints(scatterPoints, newYScale, selectedYAxis) {
+
+  scatterPoints.transition()
+    .duration(1000)
+    .attr("cy", d => newYScale(d[selectedYAxis]));
+
+  return scatterPoints;
+}
+
+// Function to update tool tip
+function updateToolTip(selectedYAxis, scatterPoints) {
+
+  var label;
+
+  if (selectedYAxis === "healthcare") {
+    label = "Healthcare:";
+  }
+  else {
+    label = "Obesity:";
+  }
+  // Create labels
+  var toolTip = d3.tip()
+    .attr("class", "tooltip")
+    .offset([80, -60])
+    .html(function(d) {
+      return (`<strong>${d.state}<hr>Poverty: ${d.poverty}%
+        <br>${label} ${d[selectedYAxis]}%<strong>`);
+    });
+
+  scatterPoints.call(toolTip);
+
+  scatterPoints.on("mouseover", function(d) {
+    toolTip.show(d, this);
+  })
+    .on("mouseout", function(d) {
+      toolTip.hide(d);
+    });
+
+  return scatterPoints;
+}
+
+
+
 // Import data
 d3.csv("assets/data/data.csv").then(function(stateData) {
 
   console.log(stateData);
   // Type cast numeric data to numeric
   stateData.forEach(function(data) {
-    data.healthcare = +data.healthcare;
+    data[selectedYAxis] = +data[selectedYAxis];
     data.poverty = +data.poverty;
-    if (data.abbr === "NH") {
-      console.log(data.poverty);
-      console.log(data.healthcare);
-    }
   });
 
   // Create scales for scatter plot
   var xScale = d3.scaleLinear()
-    .domain([d3.min(stateData, d => d.poverty) -2, d3.max(stateData, d => d.poverty) +2])
+    .domain([d3.min(stateData, d => d.poverty) * 0.8, d3.max(stateData, d => d.poverty) * 1.2])
     .range([0,width]);
 
   var yScale = d3.scaleLinear()
-    .domain([0, d3.max(stateData, d => d.healthcare)+2])
+    .domain([0, d3.max(stateData, d => d.healthcare) *1.2])
     .range([height, 0]);
 
   // Create axes
-  var xAxis = d3.axisBottom(xScale);
-  var yAxis = d3.axisLeft(yScale);
+  var bottomAxis = d3.axisBottom(xScale);
+  var leftAxis = d3.axisLeft(yScale);
 
   // Append axes to chart
-  chartGroup.append("g")
+  var xAxis = chartGroup.append("g")
     .attr("transform", `translate(0, ${height})`)
-    .call(xAxis);
+    .call(bottomAxis);
 
-  chartGroup.append("g")
-    .call(yAxis);
+  var yAxis = chartGroup.append("g")
+    .call(leftAxis);
 
   // Add axis labels
   var axisLabels = chartGroup.append("g")
@@ -69,15 +136,30 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
     .attr("y", 20)
     .attr("value", "x_axis")
     .attr("font-weight", "bold")
+    .classed("aText", true)
     .text("In Poverty (%)");
 
-  var yAxisLabel = chartGroup.append("text")
+  var healthcareLabel = chartGroup.append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 0 - margin.left)
       .attr("x", 0 - (height / 2))
       .attr("dy", "1em")
+      .attr("value", "healthcare")
       .attr("font-weight", "bold")
+      .classed("active", true)
+      .classed("aText", true)
       .text("Lacks Healthcare (%)");
+
+  var obesityLabel = chartGroup.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left/(3/2))
+      .attr("x", 0 - (height / 2))
+      .attr("dy", "1em")
+      .attr("value", "obesity")
+      .attr("font-weight", "bold")
+      .classed("inactive", true)
+      .classed("aText", true)
+      .text("Obesity (%)");
 
   // Create and plot the circles for each state
   var scatterPoints = chartGroup.selectAll("circle")
@@ -121,6 +203,48 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
   })
     .on("mouseout", function(d) {
       toolTip.hide(d);
+    });
+
+  chartGroup.selectAll("text")
+    .on("click", function() {
+      var value = d3.select(this).attr("value");
+      console.log(value);
+      if (value !== selectedYAxis) {
+
+        // Update selected y value
+        selectedYAxis = value;
+
+        // Update y scale
+        yLinearScale = updateYScale(stateData, selectedYAxis);
+        console.log(yLinearScale);
+
+        // Update y axis using new y scale
+        yAxis = updateAxis(yLinearScale, yAxis);
+
+        // Update scatter plot points
+        scatterPoints = updatePoints(scatterPoints, yLinearScale, selectedYAxis);
+
+        // Update tooltip boxes
+        scatterPoints = updateToolTip(selectedYAxis, scatterPoints);
+
+        // Updates selected y label
+        if (selectedYAxis === "healthcare") {
+          healthcareLabel
+            .classed("active", true)
+            .classed("inactive", false);
+          obesityLabel
+            .classed("active", false)
+            .classed("inactive", true);
+        }
+        else {
+          healthcareLabel
+            .classed("active", false)
+            .classed("inactive", true);
+          obesityLabel
+            .classed("active", true)
+            .classed("inactive", false);
+        }
+      }
     });
 
 
