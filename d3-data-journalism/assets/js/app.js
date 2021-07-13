@@ -174,7 +174,7 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
     .attr("cx", d => xScale(d.poverty))
     .attr("cy", d => yScale(d.healthcare))
     .attr("r", "15")
-    .attr("fill", "lightblue")
+    .attr("fill", "blue")
     .attr("stroke-width", "1")
     .attr("stroke", "white")
     .attr("opacity", 0.7);
