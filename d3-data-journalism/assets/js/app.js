@@ -100,11 +100,13 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
     .attr("x", d => xScale(d.poverty))
     .attr("y", d => yScale(d.healthcare))
     .attr("dy","0.35em")
-    .attr("text-anchor", "middle");
+    .attr("text-anchor", "middle")
+    .attr("class", "stateText");
 
   // Create tool tip
   var toolTip = d3.tip()
     .attr("class", "tooltip")
+    .attr("class", "d3-tip")
     .offset([80, -60])
     .html(function(d) {
       return (`<strong>${d.state}<hr>Poverty: ${d.poverty}%
