@@ -64,13 +64,23 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
   var scatterPoints = chartGroup.selectAll("circle")
     .data(stateData)
     .enter()
-    .append("circle")
+    .append("g")
+
+  scatterPoints.append("circle")
     .attr("cx", d => xScale(d.poverty))
     .attr("cy", d => yScale(d.healthcare))
-    .attr("r", "7")
+    .attr("r", "15")
     .attr("fill", "lightblue")
     .attr("stroke-width", "1")
-    .attr("stroke", "white");
+    .attr("stroke", "white")
+    .attr("opacity", 0.7);
+
+  scatterPoints.append("text")
+    .text(d => d.abbr)
+    .attr("x", d => xScale(d.poverty))
+    .attr("y", d => yScale(d.healthcare))
+    .attr("dy","0.35em")
+    .attr("text-anchor", "middle");
 
 
 }).catch(function(error) {
