@@ -51,11 +51,15 @@ function updateAxis(newYScale, yAxis) {
 }
 
 // function used for updating scatter plot points
-function updatePoints(scatterPoints, newYScale, selectedYAxis) {
+function updatePoints(scatterPoints, stateAbbrevText, newYScale, selectedYAxis) {
 
   scatterPoints.transition()
     .duration(1000)
     .attr("cy", d => newYScale(d[selectedYAxis]));
+
+  stateAbbrevText.transition()
+    .duration(1000)
+    .attr("y", d => newYScale(d[selectedYAxis]));
 
   return scatterPoints;
 }
@@ -74,6 +78,7 @@ function updateToolTip(selectedYAxis, scatterPoints) {
   // Create labels
   var toolTip = d3.tip()
     .attr("class", "tooltip")
+    .attr("class", "d3-tip")
     .offset([80, -60])
     .html(function(d) {
       return (`<strong>${d.state}<hr>Poverty: ${d.poverty}%
@@ -218,7 +223,7 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
         yAxis = updateAxis(yLinearScale, yAxis);
 
         // Update scatter plot points
-        scatterPoints = updatePoints(scatterPoints, yLinearScale, selectedYAxis);
+        scatterPoints = updatePoints(scatterPoints, stateAbbrevText, yLinearScale, selectedYAxis);
 
         // Update tooltip boxes
         scatterPoints = updateToolTip(selectedYAxis, scatterPoints);
