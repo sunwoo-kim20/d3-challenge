@@ -71,6 +71,14 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
     .attr("font-weight", "bold")
     .text("In Poverty (%)");
 
+  var yAxisLabel = chartGroup.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x", 0 - (height / 2))
+      .attr("dy", "1em")
+      .attr("font-weight", "bold")
+      .text("Lacks Healthcare (%)");
+
   // Create and plot the circles for each state
   var scatterPoints = chartGroup.selectAll("circle")
     .data(stateData)
