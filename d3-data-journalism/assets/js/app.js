@@ -32,8 +32,6 @@ var selectedYAxis = "healthcare";
 
 // Function to update the plot's yscale after new selection
 function updateYScale(stateData, selectedYAxis) {
-  console.log("hello");
-  console.log(d3.max(stateData, d => d[selectedYAxis]));
   var yLinearScale = d3.scaleLinear()
     .domain([0, d3.max(stateData, d => d[selectedYAxis]) * 1.2])
     .range([height, 0]);
@@ -162,12 +160,12 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
       .text("Obesity (%)");
 
   // Create and plot the circles for each state
-  var scatterPoints = chartGroup.selectAll("circle")
+  var scatterPlotting = chartGroup.selectAll("circle")
     .data(stateData)
     .enter()
     .append("g")
 
-  scatterPoints.append("circle")
+  var scatterPoints = scatterPlotting.append("circle")
     .attr("cx", d => xScale(d.poverty))
     .attr("cy", d => yScale(d.healthcare))
     .attr("r", "15")
@@ -177,7 +175,7 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
     .attr("opacity", 0.7);
 
   // Add state abbreviations for each point
-  scatterPoints.append("text")
+  var stateAbbrevText = scatterPlotting.append("text")
     .text(d => d.abbr)
     .attr("x", d => xScale(d.poverty))
     .attr("y", d => yScale(d.healthcare))
@@ -208,7 +206,6 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
   chartGroup.selectAll("text")
     .on("click", function() {
       var value = d3.select(this).attr("value");
-      console.log(value);
       if (value !== selectedYAxis) {
 
         // Update selected y value
@@ -216,7 +213,6 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
 
         // Update y scale
         yLinearScale = updateYScale(stateData, selectedYAxis);
-        console.log(yLinearScale);
 
         // Update y axis using new y scale
         yAxis = updateAxis(yLinearScale, yAxis);
