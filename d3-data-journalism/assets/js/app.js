@@ -107,8 +107,18 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
     .attr("class", "tooltip")
     .offset([80, -60])
     .html(function(d) {
-      return (`<strong>${d.state}<strong><hr>${d.poverty}%
-      <br>${d.healthcare}%`);
+      return (`<strong>${d.state}<hr>Poverty: ${d.poverty}%
+      <br>Healthcare: ${d.healthcare}%<strong>`);
+    });
+
+  chartGroup.call(toolTip);
+
+  // Create event listener for mouseover/out
+  scatterPoints.on("mouseover", function(d) {
+    toolTip.show(d, this);
+  })
+    .on("mouseout", function(d) {
+      toolTip.hide(d);
     });
 
 
