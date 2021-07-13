@@ -60,6 +60,17 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
   chartGroup.append("g")
     .call(yAxis);
 
+  // Add axis labels
+  var axisLabels = chartGroup.append("g")
+    .attr("transform", `translate(${width / 2}, ${height + 20})`);
+
+  var xAxisLabel = axisLabels.append("text")
+    .attr("x", 0)
+    .attr("y", 20)
+    .attr("value", "x_axis")
+    .attr("font-weight", "bold")
+    .text("In Poverty (%)");
+
   // Create and plot the circles for each state
   var scatterPoints = chartGroup.selectAll("circle")
     .data(stateData)
